@@ -4,13 +4,21 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert, ActivityIndicator, Pla
 import { Camera, CameraType } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import { Video } from 'expo-av';
+import PoseDetectionCamera from './components/PoseDetectionCamera';
+import TestPoseApp from './TestPoseApp';
+import SimpleApp from './SimpleApp';
 
 export default function App() {
+  // SHOW COMPLETELY DIFFERENT APP
+  return <SimpleApp />;
+  
+  // Original app code below (temporarily disabled)
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [cameraType, setCameraType] = useState(CameraType.back);
+  const [showPoseDetection, setShowPoseDetection] = useState(false);
   const [permissions, setPermissions] = useState({
     camera: null,
     audio: null,
@@ -120,6 +128,14 @@ export default function App() {
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
         <Text style={styles.loadingText}>Requesting permissions...</Text>
+        
+        {/* Skip to Pose Detection Button */}
+        <TouchableOpacity 
+          style={[styles.button, styles.poseDirectButton, { marginTop: 20 }]} 
+          onPress={() => setShowPoseDetection(true)}
+        >
+          <Text style={styles.buttonText}>🤖 SKIP TO POSE DETECTION 🤖</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -154,6 +170,15 @@ export default function App() {
         >
           <Text style={styles.buttonText}>Grant Permissions</Text>
         </TouchableOpacity>
+        
+        {/* Direct Pose Detection Button */}
+        <TouchableOpacity 
+          style={[styles.button, styles.poseDirectButton]} 
+          onPress={() => setShowPoseDetection(true)}
+        >
+          <Text style={styles.buttonText}>🤖 TRY POSE DETECTION 🤖</Text>
+        </TouchableOpacity>
+        
         <TouchableOpacity 
           style={[styles.button, styles.settingsButton]} 
           onPress={openSettings}
@@ -161,6 +186,15 @@ export default function App() {
           <Text style={styles.buttonText}>Open Settings</Text>
         </TouchableOpacity>
       </View>
+    );
+  }
+
+  // Show pose detection camera if enabled
+  if (showPoseDetection) {
+    return (
+      <PoseDetectionCamera 
+        onClose={() => setShowPoseDetection(false)}
+      />
     );
   }
 
@@ -191,6 +225,16 @@ export default function App() {
           ref={ref => setCameraRef(ref)}
           ratio="16:9"
         >
+          {/* Top Pose Button - Very Visible */}
+          <View style={styles.topPoseButton}>
+            <TouchableOpacity
+              style={styles.bigPoseButton}
+              onPress={() => setShowPoseDetection(true)}
+            >
+              <Text style={styles.bigPoseButtonText}>🤖 OPEN POSE DETECTION 🤖</Text>
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[styles.controlButton, styles.recordButton]}
@@ -198,6 +242,14 @@ export default function App() {
             >
               <View style={isRecording ? styles.stopIcon : styles.recordIcon} />
             </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[styles.controlButton, styles.poseButton]}
+              onPress={() => setShowPoseDetection(true)}
+            >
+              <Text style={styles.poseButtonText}>🤖 POSE</Text>
+            </TouchableOpacity>
+            
             <TouchableOpacity
               style={[styles.controlButton, styles.flipButton]}
               onPress={toggleCameraType}
@@ -253,6 +305,11 @@ const styles = StyleSheet.create({
   settingsButton: {
     backgroundColor: '#666',
   },
+  poseDirectButton: {
+    backgroundColor: '#FF6B35',
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+  },
   buttonText: {
     color: '#fff',
     fontSize: 16,
@@ -298,6 +355,50 @@ const styles = StyleSheet.create({
   flipButton: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 15,
+  },
+  poseButton: {
+    backgroundColor: '#FF6B35',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  poseButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  topPoseButton: {
+    position: 'absolute',
+    top: 100,
+    left: 20,
+    right: 20,
+    zIndex: 100,
+  },
+  bigPoseButton: {
+    backgroundColor: '#FF0000',
+    padding: 20,
+    borderRadius: 15,
+    borderWidth: 5,
+    borderColor: '#FFFFFF',
+    alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  bigPoseButtonText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    textShadowColor: '#000000',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   retakeButton: {
     backgroundColor: '#007AFF',
