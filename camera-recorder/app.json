@@ -10,13 +10,16 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.yourname.camerarecorder",
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to record videos.",
         "NSMicrophoneUsageDescription": "This app uses the microphone to record audio with videos.",
         "NSPhotoLibraryAddUsageDescription": "This app needs permission to save videos to your photo library.",
-        "NSPhotoLibraryUsageDescription": "This app needs permission to access your photo library to save videos."
-      },
-      "bundleIdentifier": "com.yourname.camerarecorder"
+        "NSPhotoLibraryUsageDescription": "This app needs permission to access your photo library to save videos.",
+        "UIBackgroundModes": ["audio", "location"],
+        "NSLocationWhenInUseUsageDescription": "This app needs access to location when open to save media with location data.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs access to location when in the background to save media with location data."
+      }
     },
     "android": {
       "permissions": [
@@ -27,8 +30,10 @@
         "android.permission.READ_MEDIA_AUDIO",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
-        "android.permission.ACCESS_MEDIA_LOCATION"
+        "android.permission.ACCESS_MEDIA_LOCATION",
+        "android.permission.FOREGROUND_SERVICE"
       ],
+      "blockedPermissions": [],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -49,7 +54,8 @@
       ["expo-media-library", {
         "photosPermission": "Allow Camera Recorder to access your photos to save videos.",
         "savePhotosPermission": "Allow Camera Recorder to save videos to your photo library.",
-        "isAccessMediaLocationEnabled": true
+        "isAccessMediaLocationEnabled": false,
+        "isAccessMediaLocationPermissionRequired": false
       }],
       "expo-camera",
       [
